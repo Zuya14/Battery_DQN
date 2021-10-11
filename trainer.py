@@ -8,7 +8,7 @@ import gym
 import matplotlib.pyplot as plt
 import csv
 
-aaa = 21
+aaa = 39
 
 class Trainer:
 
@@ -23,7 +23,7 @@ class Trainer:
         self.env_test.seed(2**31-seed)
 
         # 平均収益を保存するための辞書．
-        self.returns = {'step': [], 'return': []}
+        self.returns = {'step': [], 'return': [],  'sum_exchange': []}
 
         # データ収集を行うステップ数．
         self.num_steps = num_steps
@@ -77,18 +77,18 @@ class Trainer:
                     
                     returns = []
                     for _ in range(self.num_eval_episodes):
-                        state = self.env_test.reset()
+                        state = self.env_test.reset(test=True)
                         done = False
                         episode_return = 0.0
 
                         while not done:
                             action, q = self.algo.exploit2(state)
+                            state, reward, done, _ = self.env_test.step(action)
+                            episode_return += reward
+
                             writer.writerow(q)
                             writer2.writerow(state)
                             writer3.writerow([action])
-
-                            state, reward, done, _ = self.env_test.step(action)
-                            episode_return += reward
                             if done:
                                 break
 
@@ -97,9 +97,11 @@ class Trainer:
         mean_return = np.mean(returns)
         self.returns['step'].append(steps)
         self.returns['return'].append(mean_return)
+        self.returns['sum_exchange'].append(self.env_test.sum_exchange)
 
         print(f'Num steps: {steps:<6}   '
             f'Return: {mean_return:<5.1f}   '
+            f'sum_exchange: {self.env_test.sum_exchange:<5.1f}   '
             #   f'Final state: {state}   '
             f'Final_minute: {state[-1]}   '
             f'Time: {self.time}')
@@ -117,7 +119,6 @@ class Trainer:
         # fig.savefig("log/"+self.algo.name+s+".png")
         fig.savefig(path + f"/{aaa}/" + self.algo.name + s + "_return.png")
 
-        """ 平均収益のグラフを描画する． """
         fig = plt.figure(figsize=(8, 6))
         plt.plot([i for i in range(self.eval_interval, self.eval_interval+len(self.algo.log_loss), 100)], self.algo.log_loss[::100])
         plt.xlabel('Steps', fontsize=24)
@@ -128,6 +129,22 @@ class Trainer:
         plt.tight_layout()
         # fig.savefig("log/"+self.algo.name+s+".png")
         fig.savefig(path + f"/{aaa}/" + self.algo.name + s + "_loss.png")
+
+        path = f'./{aaa}/' 
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        csv_path = os.path.join(path, "return.csv")
+        with open(csv_path, 'w') as f:
+            writer = csv.writer(f)
+            for r in np.array(self.returns['return']):
+                writer.writerow([r])
+
+        csv_path = os.path.join(path, "sum_exchange.csv")
+        with open(csv_path, 'w') as f:
+            writer = csv.writer(f)
+            for r in np.array(self.returns['sum_exchange']):
+                writer.writerow([r])
 
     @property
     def time(self):

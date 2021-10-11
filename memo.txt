@@ -27,3 +27,40 @@ Net (buffer*1/2)
 
 DNet (buffer*1/2)
 20
+
+DDQN max
+24
+
+
+
+bug fix!!!!!!!!!!!!!!!!!!!!!!!!!
+DNet
+25
+Net
+26
+27
+DNet
+28
+DNet bug fixed(elu)
+29
+DNet add change_is_odd
+30
+DNet del change_is_odd  add old_a + now_a > battery_num
+31
+DeNet reward += -(old_a + now_a - battery_num)
+32
+DeNet reward += -(battery[action-1]-battery[lift-1])/100
+33
+DeNet reward += -(battery[action-1]-battery[lift-1])/100 change_is_odd
+34
+
+DeNet plane reward t=U[5, 550]
+35
+DeNet plane reward t=U[5, 550*2]
+36
+DeNet plane reward t=U[5, 550*2] hidden = 64
+37
+DeNet plane reward t=U[5, 550*2] hidden = 256
+38
+DeNet plane reward t=truncnorm hidden = 256
+39

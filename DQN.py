@@ -25,6 +25,7 @@ class DNet(nn.Module):
             nn.Linear(state_size, hidden_size),
             nn.ELU(inplace=True),
             nn.Linear(hidden_size, hidden_size),
+            nn.ELU(inplace=True)
         )
 
         self.fc_adv = nn.Linear(hidden_size, action_size)

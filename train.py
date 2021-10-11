@@ -13,11 +13,13 @@ if __name__ == '__main__':
 
     start_time = datetime.datetime.now()
 
-    NUM_STEPS = 1 * 10 ** 5
+    NUM_STEPS = 1 * 10 ** 6
     EVAL_INTERVAL = 5 * 10 ** 3
 
-    env = batteryEnv(10, 6, 550)
-    env_test = batteryEnv(10, 6, 550)
+    env_time = 550
+    # env_time = 225
+    env = batteryEnv(10, 6, env_time)
+    env_test = batteryEnv(10, 6, env_time)
 
     algo = DQN(
         state_size=env.state_space.shape[0],

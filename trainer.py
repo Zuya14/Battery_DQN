@@ -7,8 +7,9 @@ import numpy as np
 import gym
 import matplotlib.pyplot as plt
 import csv
+import sys
 
-aaa = 39
+aaa = 62
 
 class Trainer:
 
@@ -32,7 +33,7 @@ class Trainer:
         # 評価を行うエピソード数．
         self.num_eval_episodes = num_eval_episodes
     
-    def train(self):
+    def train(self, path):
         """ num_stepsステップの間，データ収集・学習・評価を繰り返す． """
 
         # 学習開始の時間
@@ -55,12 +56,12 @@ class Trainer:
 
             # 一定のインターバルで評価する．
             if steps % self.eval_interval == 0:
-                self.evaluate(steps)
+                self.evaluate(steps, path)
 
-    def evaluate(self, steps):
+    def evaluate(self, steps, path):
         """ 複数エピソード環境を動かし，平均収益を記録する． """
 
-        path = f'./{aaa}/{steps}/' 
+        path = os.path.join(path, str(steps))
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -86,7 +87,8 @@ class Trainer:
                             state, reward, done, _ = self.env_test.step(action)
                             episode_return += reward
 
-                            writer.writerow(q)
+                            # writer.writerow(q)
+                            writer.writerow([*q,  np.average(q), *(q-np.average(q))])
                             writer2.writerow(state)
                             writer3.writerow([action])
                             if done:
@@ -100,11 +102,12 @@ class Trainer:
         self.returns['sum_exchange'].append(self.env_test.sum_exchange)
 
         print(f'Num steps: {steps:<6}   '
-            f'Return: {mean_return:<5.1f}   '
+            f'Return: {mean_return:<5.4f}   '
             f'sum_exchange: {self.env_test.sum_exchange:<5.1f}   '
             #   f'Final state: {state}   '
-            f'Final_minute: {state[-1]}   '
+            f'Final_minute: {self.env_test.left_time}   '
             f'Time: {self.time}')
+        sys.stdout.flush()
 
     def plot(self, path="./", s=""):
         """ 平均収益のグラフを描画する． """
@@ -117,7 +120,7 @@ class Trainer:
         plt.title('return', fontsize=24)
         plt.tight_layout()
         # fig.savefig("log/"+self.algo.name+s+".png")
-        fig.savefig(path + f"/{aaa}/" + self.algo.name + s + "_return.png")
+        fig.savefig(os.path.join(path, self.algo.name + s + "_return.png"))
 
         fig = plt.figure(figsize=(8, 6))
         plt.plot([i for i in range(self.eval_interval, self.eval_interval+len(self.algo.log_loss), 100)], self.algo.log_loss[::100])
@@ -128,9 +131,10 @@ class Trainer:
         plt.title('loss', fontsize=24)
         plt.tight_layout()
         # fig.savefig("log/"+self.algo.name+s+".png")
-        fig.savefig(path + f"/{aaa}/" + self.algo.name + s + "_loss.png")
+        # fig.savefig(path + f"/{aaa}/" + self.algo.name + s + "_loss.png")
+        fig.savefig(os.path.join(path, self.algo.name + s + "_loss.png"))
 
-        path = f'./{aaa}/' 
+        # path = f'./{aaa}/' 
         if not os.path.exists(path):
             os.makedirs(path)
 

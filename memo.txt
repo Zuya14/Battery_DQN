@@ -64,3 +64,201 @@ DeNet plane reward t=U[5, 550*2] hidden = 256
 38
 DeNet plane reward t=truncnorm hidden = 256
 39
+DeNet plane reward t=truncnorm hidden = 256 reward += -1000000 
+40
+DeNet plane reward t=truncnorm hidden = 256 reward += -1000000 hiddenLayer+1
+41
+
+
+DeNet plane reward t=truncnorm hidden = 256
+reward += -10000 * (1 - lift_battery_rate)
+42
+
+DeNet plane reward t=550 hidden = 256
+reward += -1  lift_zero not done 
+43
+
+DeNet plane reward t=550 hidden = 256
+reward += -1  lift_zero not done 
+state old_action old_change_time
+44
+
+DeNet plane reward t=550 hidden = 256
+reward += -10000  lift_zero 
+state old_action old_change_time
+action_repeat = 10
+45
+
+DeNet plane reward t=550 hidden = 256
+reward += -10000  lift_zero 
+state old_action old_change_time
+action_repeat = 1
+action==0 reward += 1
+46
+
+
+DeNet plane reward t=550 hidden = 256
+reward += -10000  lift_zero 
+state old_action old_change_time
+action_repeat = 1
+action==0 reward += 1
+no sum_exchange reward
+47
+
+DeNet plane reward t=550 hidden = 64
+reward += -10000  lift_zero 
+reward += -10*sum_exchange
+state old_action old_change_time
+action_repeat = 1
+reward /= 10000
+48
+
+DeNet plane reward t=550 hidden = 64
+reward += -10000  lift_zero 
+reward += -10*sum_exchange
+state old_action old_change_time
+action_repeat = 1
+reward /= 10000
+49
+
+DeNet plane reward t=550 hidden = 64
+reward += -10000  lift_zero 
+reward += -10*sum_exchange
+state old_action old_change_time
+action_repeat = 1
+action==0 reward += 1
+fix PER weight
+50
+
+DeNet plane reward t=550 hidden = 64
+reward += -1  lift_zero 
+reward += -sum_exchange
+state old_action old_change_time
+action_repeat = 1
+fix PER weight
+action==0 reward += 1
+Huber Loss
+51
+
+DeNet plane reward t=550 hidden = 64
+reward += -1  lift_zero 
+reward += -sum_exchange
+state old_action old_change_time
+action_repeat = 1
+fix PER weight
+action!=0 reward += -0.01
+Huber Loss
+52
+
+DeNet plane reward t=550 hidden = 64
+reward += -1  lift_zero 
+reward += -sum_exchange/10000
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=10
+53
+
+DeNet plane reward t=550 hidden = 64
+reward += -1  lift_zero 
+reward += -sum_exchange/10000
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=1
+54
+
+DeNet plane reward t=550 hidden = 64
+reward += -10000  lift_zero 
+reward += -sum_exchange
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=10
+55
+
+DeNet plane reward t=550 hidden = 64
+reward += -1 lift_zero 
+reward += (660-sum_exchange)/660 -sum_exchange
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=1
+56
+
+DeNet plane reward t=550 hidden = 64
+reward += -1 lift_zero 
+reward += (660-sum_exchange)/660
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=1
+57
+
+DeNet plane reward t=550 hidden = 64
+reward += -1 lift_zero 
+reward += (660-sum_exchange)/660
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=3
+58
+
+
+!!!!!!!!! new env setthing !!!!!!!!!!!!!!!!!
+
+DeNet plane reward t=550 hidden = 64
+reward += -1 lift_zero 
+reward += 1.0 - self.sum_exchange/self.max_limit_change 
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=1
+59
+
+DeNet plane reward t=550 hidden = 64
+reward += -1 lift_zero 
+reward += 1.0 - self.sum_exchange/self.max_limit_change 
+reward += -0.01 if action!=0 and self.sum_exchange >= self.max_limit_change:
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=1
+env fix reset
+max_limit_change = 50
+60
+
+DeNet plane reward t=550 hidden = 64
+reward += -1 lift_zero 
+reward += 1.0 - self.sum_exchange/self.max_limit_change 
+reward += -0.01 if action!=0 and self.sum_exchange >= self.max_limit_change:
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=1
+env fix reset
+sample action bias
+max_limit_change = 50
+61
+
+DeNet plane reward t=550 hidden = 64
+reward += -1 lift_zero 
+reward += 1.0 - self.sum_exchange/self.max_limit_change 
+reward += -0.01 if action!=0 and self.sum_exchange >= self.max_limit_change:
+action_repeat = 1
+fix PER weight
+Huber Loss
+batch=64
+nstep=1
+env fix reset
+max_limit_change = 100
+62

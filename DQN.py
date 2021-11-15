@@ -11,9 +11,11 @@ class Net(nn.Module):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(state_size, hidden_size),
-            nn.ELU(inplace=True),
+            # nn.ELU(inplace=True),
+            nn.LeakyReLU(inplace=True),
             nn.Linear(hidden_size, hidden_size),
-            nn.ELU(inplace=True),
+            # nn.ELU(inplace=True),
+            nn.LeakyReLU(inplace=True),
             nn.Linear(hidden_size, action_size)
         )
 
@@ -25,9 +27,11 @@ class DNet(nn.Module):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(state_size, hidden_size),
-            nn.ELU(inplace=True),
+            # nn.ELU(inplace=True),
+            nn.LeakyReLU(inplace=True),
             nn.Linear(hidden_size, hidden_size),
-            nn.ELU(inplace=True)
+            # nn.ELU(inplace=True),
+            nn.LeakyReLU(inplace=True),
         )
         # self.net = nn.Sequential(
         #     nn.Linear(state_size, hidden_size),

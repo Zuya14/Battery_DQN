@@ -69,11 +69,11 @@ class Trainer:
         csv_path2 = os.path.join(path, "state.csv")
         csv_path3 = os.path.join(path, "action.csv")
 
-        with open(csv_path, 'w') as f:
+        with open(csv_path, 'w', newline="") as f:
             writer = csv.writer(f)
-            with open(csv_path2, 'w') as f2:
+            with open(csv_path2, 'w', newline="") as f2:
                 writer2 = csv.writer(f2)
-                with open(csv_path3, 'w') as f3:
+                with open(csv_path3, 'w', newline="") as f3:
                     writer3 = csv.writer(f3)
                     
                     returns = []

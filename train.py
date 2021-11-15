@@ -9,6 +9,7 @@ from trainer import Trainer
 
 from env import batteryEnv
 from env2 import batteryEnv2
+from env3 import batteryEnv3
 
 if __name__ == '__main__':
 
@@ -31,7 +32,8 @@ if __name__ == '__main__':
     env_test = batteryEnv(10, 6, env_time, max_limit_change, step_minutes)
     # env = batteryEnv2(10, 6, env_time, max_limit_change, step_minutes)
     # env_test = batteryEnv2(10, 6, env_time, max_limit_change, step_minutes)
-
+    # env = batteryEnv3(10, 6, env_time, max_limit_change, step_minutes)
+    # env_test = batteryEnv3(10, 6, env_time, max_limit_change, step_minutes)
 
     algo = DQN(
         state_size=env.state_space.shape[0],

@@ -42,10 +42,10 @@ class batteryEnv(gym.Env):
             # std =  self.working_minutes / 2
             # a, b = (a - mean) / std, (b - mean) / std
             # self.left_time = int(round(*truncnorm.rvs(a, b, loc=mean, scale=std, size=1)))*self.step_minutes
-            # self.lifts = np.random.uniform(low=10.0, high=100.0, size=self.lift_num)
-            # self.batterys = np.random.uniform(low=10.0, high=100.0, size=self.battery_num)
-            self.lifts = np.full(self.lift_num, 100.0)
-            self.batterys = np.full(self.battery_num, 100.0)
+            self.lifts = np.random.uniform(low=10.0, high=100.0, size=self.lift_num)
+            self.batterys = np.random.uniform(low=10.0, high=100.0, size=self.battery_num)
+            # self.lifts = np.full(self.lift_num, 100.0)
+            # self.batterys = np.full(self.battery_num, 100.0)
         
         self.sort()
 
@@ -116,26 +116,28 @@ class batteryEnv(gym.Env):
 
     def getState(self):
         # return np.concatenate([self.lifts, self.batterys, [self.left_time]])
-        # return np.concatenate([self.lifts, self.batterys, [self.sum_exchange], [self.left_time]])
+        return np.concatenate([self.lifts, self.batterys, [self.sum_exchange], [self.left_time]])
         # return np.concatenate([self.lifts, self.batterys, [self.old_change_time], [self.sum_exchange], [self.left_time]])
         # return np.concatenate([self.lifts, self.batterys, [self.old_action], [self.old_change_time], [self.sum_exchange], [self.left_time]])
         # return np.concatenate([[self.old_action], self.lifts, self.batterys, [self.left_time]])
-        return np.concatenate([self.lifts/100.0, self.batterys/100.0, [self.sum_exchange/self.max_limit_change ], [self.left_time/self.working_minutes]])
+        # return np.concatenate([self.lifts/100.0, self.batterys/100.0, [self.sum_exchange/self.max_limit_change ], [self.left_time/self.working_minutes]])
         # return np.concatenate([self.lifts/100.0, self.batterys/100.0, [self.sum_exchange/self.max_limit_change ], [self.left_time<self.working_minutes/10]])
         # return np.concatenate([self.lifts/100.0, self.batterys/100.0, [self.sum_exchange/self.max_limit_change ]])
 
     def getReward(self, lift_is_zero, change_is_odd, change_over, change_diff, action):
         reward = 0
-        reward += -100*action
+        # reward += -100*action
         if self.left_time <= 0:
-            pass
+            # pass
+            reward += 1.0 / (1+self.sum_exchange) 
             # reward += 1.0 - self.sum_exchange/self.max_limit_change 
             # reward += -self.sum_exchange 
             # reward += -self.sum_exchange * 10
             # reward += (660-self.sum_exchange)/660
 
         elif lift_is_zero:
-            pass
+            # pass
+            reward += -np.count_nonzero(self.lifts <= 0.0)
             # reward += -1
             # reward += -10000 
             # reward += -1000000 
@@ -183,9 +185,9 @@ if __name__ == '__main__':
     done = False
 
     env.reset(test=False)
-    with open('env_state.csv', 'w') as f:
+    with open('env3_state.csv', 'w', newline="") as f:
         writer = csv.writer(f)
 
         while not done:
-            state, reward, done, _ = env.step(np.random.randint(0, 6))
+            state, reward, done, _ = env.step(env.sample_random_action())
             writer.writerow(state)

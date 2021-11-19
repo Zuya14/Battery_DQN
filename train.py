@@ -28,9 +28,13 @@ if __name__ == '__main__':
     # step_minutes = 50
     step_minutes = 5
 
-    env = batteryEnv(10, 6, env_time, max_limit_change, step_minutes)
-    env_test = batteryEnv(10, 6, env_time, max_limit_change, step_minutes)
-    # env = batteryEnv2(10, 6, env_time, max_limit_change, step_minutes)
+    env = batteryEnv(3, 1, env_time, max_limit_change, step_minutes)
+    env_test = batteryEnv(3, 1, env_time, max_limit_change, step_minutes)
+ 
+
+    # env = batteryEnv(10, 6, env_time, max_limit_change, step_minutes)
+    # env_test = batteryEnv(10, 6, env_time, max_limit_change, step_minutes)
+    # # env = batteryEnv2(10, 6, env_time, max_limit_change, step_minutes)
     # env_test = batteryEnv2(10, 6, env_time, max_limit_change, step_minutes)
     # env = batteryEnv3(10, 6, env_time, max_limit_change, step_minutes)
     # env_test = batteryEnv3(10, 6, env_time, max_limit_change, step_minutes)
@@ -41,7 +45,8 @@ if __name__ == '__main__':
         epsilon_decay = NUM_STEPS,
         start_steps=10000,
         # hidden_size=256,
-        hidden_size=64,
+        # hidden_size=64,
+        hidden_size=128,
         # action_repeat=10
     )
 

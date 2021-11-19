@@ -35,7 +35,8 @@ class batteryEnv2(gym.Env):
             # self.lifts = np.full(self.lift_num, 100.0)
             # self.batterys = np.full(self.battery_num, 100.0)
             self.lifts = np.random.uniform(low=10.0, high=100.0, size=self.lift_num)
-            self.batterys = np.random.uniform(low=10.0, high=100.0, size=self.battery_num)
+            # self.batterys = np.random.uniform(low=10.0, high=100.0, size=self.battery_num)
+            self.batterys = np.random.uniform(low=np.min(self.batterys), high=100.0, size=self.battery_num)
 
         # self.sort()
 

@@ -28,10 +28,14 @@ class DNet(nn.Module):
         self.net = nn.Sequential(
             nn.Linear(state_size, hidden_size),
             # nn.ELU(inplace=True),
-            nn.LeakyReLU(inplace=True),
+            # nn.LeakyReLU(inplace=True),
+            nn.ReLU(inplace=True),
             nn.Linear(hidden_size, hidden_size),
             # nn.ELU(inplace=True),
-            nn.LeakyReLU(inplace=True),
+            # nn.LeakyReLU(inplace=True),
+            nn.ReLU(inplace=True),
+            nn.Linear(hidden_size, hidden_size),
+            nn.ReLU(inplace=True),
         )
         # self.net = nn.Sequential(
         #     nn.Linear(state_size, hidden_size),

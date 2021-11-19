@@ -15,7 +15,8 @@ class batteryEnv(gym.Env):
         self.step_minutes = step_minutes
 
         # self.state_space = gym.spaces.Box(low=0.0, high=math.inf, shape=(lift_num + battery_num + 1,))
-        self.state_space = gym.spaces.Box(low=0.0, high=math.inf, shape=(lift_num + battery_num + 1+1,))
+        # self.state_space = gym.spaces.Box(low=0.0, high=math.inf, shape=(lift_num + battery_num + 1+1,))
+        self.state_space = gym.spaces.Box(low=0.0, high=math.inf, shape=((lift_num + battery_num)*2 + 1+1,))
         # self.state_space = gym.spaces.Box(low=0.0, high=math.inf, shape=(lift_num + battery_num + 1+1+1,))
         # self.state_space = gym.spaces.Box(low=0.0, high=math.inf, shape=(lift_num + battery_num + 1+1+1+1,))
         self.action_space = gym.spaces.Discrete(min(lift_num, battery_num) + 1) 
@@ -47,6 +48,11 @@ class batteryEnv(gym.Env):
             # self.lifts = np.full(self.lift_num, 100.0)
             # self.batterys = np.full(self.battery_num, 100.0)
         
+        self.old_lifts = self.lifts.copy()
+        self.old_batterys = self.batterys.copy()
+        self.lifts_diff = np.zeros(self.lift_num)
+        self.batterys_diff = np.zeros(self.battery_num)
+
         self.sort()
 
         # self.left_time = self.working_minutes
@@ -97,6 +103,13 @@ class batteryEnv(gym.Env):
 
         self.sort()
        
+        self.lifts_diff = self.lifts - self.old_lifts
+        self.batterys_diff = self.batterys - self.old_batterys
+
+        self.old_lifts = self.lifts.copy()
+        self.old_batterys = self.batterys.copy()
+
+
         self.left_time += -self.step_minutes
 
         state = self.getState()
@@ -116,13 +129,15 @@ class batteryEnv(gym.Env):
 
     def getState(self):
         # return np.concatenate([self.lifts, self.batterys, [self.left_time]])
-        return np.concatenate([self.lifts, self.batterys, [self.sum_exchange], [self.left_time]])
+        # return np.concatenate([self.lifts, self.batterys, [self.sum_exchange], [self.left_time]])
         # return np.concatenate([self.lifts, self.batterys, [self.old_change_time], [self.sum_exchange], [self.left_time]])
         # return np.concatenate([self.lifts, self.batterys, [self.old_action], [self.old_change_time], [self.sum_exchange], [self.left_time]])
         # return np.concatenate([[self.old_action], self.lifts, self.batterys, [self.left_time]])
         # return np.concatenate([self.lifts/100.0, self.batterys/100.0, [self.sum_exchange/self.max_limit_change ], [self.left_time/self.working_minutes]])
         # return np.concatenate([self.lifts/100.0, self.batterys/100.0, [self.sum_exchange/self.max_limit_change ], [self.left_time<self.working_minutes/10]])
         # return np.concatenate([self.lifts/100.0, self.batterys/100.0, [self.sum_exchange/self.max_limit_change ]])
+
+        return np.concatenate([self.lifts, self.batterys, self.lifts_diff, self.batterys_diff, [self.sum_exchange], [self.left_time]])
 
     def getReward(self, lift_is_zero, change_is_odd, change_over, change_diff, action):
         reward = 0
@@ -170,6 +185,8 @@ class batteryEnv(gym.Env):
         # reward += change_diff/100.0
 
         # reward = reward / 10000
+
+        reward += - np.mean(np.where(self.batterys_diff>0, self.batterys_diff, 0))/100
 
         return  reward
         

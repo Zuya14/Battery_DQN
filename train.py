@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
     start_time = datetime.datetime.now()
 
-    # NUM_STEPS = 1 * 10 ** 6
-    NUM_STEPS = 1 * 10 ** 5
+    NUM_STEPS = 1 * 10 ** 6
+    # NUM_STEPS = 1 * 10 ** 5
     EVAL_INTERVAL = 5 * 10 ** 3
 
     env_time = 550
@@ -28,12 +28,18 @@ if __name__ == '__main__':
     # step_minutes = 50
     step_minutes = 5
 
-    env = batteryEnv(10, 6, env_time, max_limit_change, step_minutes)
-    env_test = batteryEnv(10, 6, env_time, max_limit_change, step_minutes)
-    # env = batteryEnv2(10, 6, env_time, max_limit_change, step_minutes)
-    # env_test = batteryEnv2(10, 6, env_time, max_limit_change, step_minutes)
-    # env = batteryEnv3(10, 6, env_time, max_limit_change, step_minutes)
-    # env_test = batteryEnv3(10, 6, env_time, max_limit_change, step_minutes)
+    # lift_num = 10
+    lift_num = 3
+    # battery_num = 6
+    battery_num = 1
+
+
+    env = batteryEnv(lift_num, battery_num, env_time, max_limit_change, step_minutes)
+    env_test = batteryEnv(lift_num, battery_num, env_time, max_limit_change, step_minutes)
+    # env = batteryEnv2(lift_num, battery_num, env_time, max_limit_change, step_minutes)
+    # env_test = batteryEnv2(lift_num, battery_num, env_time, max_limit_change, step_minutes)
+    # env = batteryEnv3(lift_num, battery_num, env_time, max_limit_change, step_minutes)
+    # env_test = batteryEnv3(lift_num, battery_num, env_time, max_limit_change, step_minutes)
 
     algo = DQN(
         state_size=env.state_space.shape[0],

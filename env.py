@@ -129,7 +129,8 @@ class batteryEnv(gym.Env):
         # reward += -100*action
         if self.left_time <= 0:
             # pass
-            reward += 1.0 / (1+self.sum_exchange) 
+            # reward += 1.0 / (1+self.sum_exchange) 
+            reward += 1.005 ** (-self.sum_exchange) 
             # reward += 1.0 - self.sum_exchange/self.max_limit_change 
             # reward += -self.sum_exchange 
             # reward += -self.sum_exchange * 10

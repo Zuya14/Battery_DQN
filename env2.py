@@ -7,7 +7,7 @@ from scipy.stats import truncnorm
 class batteryEnv2(gym.Env):
 
     def __init__(self, lift_num, battery_num, working_minutes, max_limit_change=None, step_minutes=5):
-        self.name = " batteryEnv2"
+        self.name = "batteryEnv2"
 
         self.lift_num = lift_num
         self.battery_num = battery_num
@@ -36,7 +36,7 @@ class batteryEnv2(gym.Env):
             # self.batterys = np.full(self.battery_num, 100.0)
             self.lifts = np.random.uniform(low=10.0, high=100.0, size=self.lift_num)
             # self.batterys = np.random.uniform(low=10.0, high=100.0, size=self.battery_num)
-            self.batterys = np.random.uniform(low=np.min(self.batterys), high=100.0, size=self.battery_num)
+            self.batterys = np.random.uniform(low=np.min(self.lifts), high=100.0, size=self.battery_num)
 
         # self.sort()
 
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     done = False
 
     env.reset(test=False)
-    with open('env3_state.csv', 'w', newline="") as f:
+    with open('env2_state.csv', 'w', newline="") as f:
         writer = csv.writer(f)
 
         while not done:

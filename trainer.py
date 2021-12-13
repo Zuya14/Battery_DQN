@@ -8,12 +8,13 @@ import gym
 import matplotlib.pyplot as plt
 import csv
 import sys
+from torch.utils.tensorboard import SummaryWriter
 
 aaa = 62
 
 class Trainer:
 
-    def __init__(self, env, env_test, algo, seed=0, num_steps=10**6, eval_interval=10**4, num_eval_episodes=1):
+    def __init__(self, env, env_test, algo, seed=0, num_steps=10**6, eval_interval=10**4, num_eval_episodes=1, log_dir="./"):
 
         self.env = env
         self.env_test = env_test
@@ -33,6 +34,10 @@ class Trainer:
         # 評価を行うエピソード数．
         self.num_eval_episodes = num_eval_episodes
     
+        self.log_dir = log_dir
+        self.summary_dir = os.path.join(log_dir, "summary")
+        self.writer = SummaryWriter(log_dir=self.summary_dir)
+
     def train(self, path):
         """ num_stepsステップの間，データ収集・学習・評価を繰り返す． """
 
@@ -52,7 +57,7 @@ class Trainer:
 
             # アルゴリズムが準備できていれば，1回学習を行う．
             if self.algo.is_update(steps):
-                self.algo.update()
+                self.algo.update(self.writer)
 
             # 一定のインターバルで評価する．
             if steps % self.eval_interval == 0:
@@ -100,6 +105,8 @@ class Trainer:
         self.returns['step'].append(steps)
         self.returns['return'].append(mean_return)
         self.returns['sum_exchange'].append(self.env_test.sum_exchange)
+
+        self.writer.add_scalar("return/test", mean_return, steps)
 
         print(f'Num steps: {steps:<6}   '
             f'Return: {mean_return:<5.4f}   '

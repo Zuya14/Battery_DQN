@@ -7,7 +7,7 @@ from scipy.stats import truncnorm
 class batteryEnv(gym.Env):
 
     def __init__(self, lift_num, battery_num, working_minutes, max_limit_change=None, step_minutes=5):
-        self.name = " batteryEnv"
+        self.name = "batteryEnv"
 
         self.lift_num = lift_num
         self.battery_num = battery_num
@@ -186,7 +186,7 @@ class batteryEnv(gym.Env):
 
         # reward = reward / 10000
 
-        reward += - np.mean(np.where(self.batterys_diff>0, self.batterys_diff, 0))/100
+        # reward += - np.mean(np.where(self.batterys_diff>0, self.batterys_diff, 0))/100
 
         return  reward
         
@@ -202,7 +202,7 @@ if __name__ == '__main__':
     done = False
 
     env.reset(test=False)
-    with open('env3_state.csv', 'w', newline="") as f:
+    with open('env_state.csv', 'w', newline="") as f:
         writer = csv.writer(f)
 
         while not done:

@@ -25,18 +25,46 @@ class Net(nn.Module):
 class DNet(nn.Module):
     def __init__(self, state_size, action_size, hidden_size=64):
         super().__init__()
+
+        self.action_size = action_size
+
         self.net = nn.Sequential(
+            nn.Conv1d(1, 4, 3, 1, 1, bias=False),
+            # nn.Conv1d(4, 4, 3, 1, 1, bias=False),
+            nn.BatchNorm1d(4),
+            nn.LeakyReLU(inplace=True),
+
+            nn.Conv1d(4, 8, 3, 1, 1, bias=False),
+            # nn.Conv1d(8, 8, 3, 1, 1, bias=False),
+            nn.BatchNorm1d(8),
+            nn.LeakyReLU(inplace=True),
+
+            nn.Conv1d(8, 16, 3, 1, 1, bias=False),
+            # nn.Conv1d(16, 16, 3, 1, 1, bias=False),
+            nn.BatchNorm1d(16),
+            nn.LeakyReLU(inplace=True),
+
+            nn.Conv1d(16, 1, 1),
+            nn.LeakyReLU(inplace=True),
+
             nn.Linear(state_size, hidden_size),
-            # nn.ELU(inplace=True),
+            nn.LeakyReLU(inplace=True),
+            # nn.Linear(hidden_size, hidden_size),
             # nn.LeakyReLU(inplace=True),
-            nn.ReLU(inplace=True),
-            nn.Linear(hidden_size, hidden_size),
-            # nn.ELU(inplace=True),
-            # nn.LeakyReLU(inplace=True),
-            nn.ReLU(inplace=True),
-            nn.Linear(hidden_size, hidden_size),
-            nn.ReLU(inplace=True),
         )
+
+        # self.net = nn.Sequential(
+        #     nn.Linear(state_size, hidden_size),
+        #     # nn.ELU(inplace=True),
+        #     # nn.LeakyReLU(inplace=True),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(hidden_size, hidden_size),
+        #     # nn.ELU(inplace=True),
+        #     # nn.LeakyReLU(inplace=True),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(hidden_size, hidden_size),
+        #     nn.ReLU(inplace=True),
+        # )
         # self.net = nn.Sequential(
         #     nn.Linear(state_size, hidden_size),
         #     nn.ELU(inplace=True),
@@ -46,14 +74,26 @@ class DNet(nn.Module):
         #     nn.ELU(inplace=True)
         # )
 
+        # self.fc_adv = nn.Linear(hidden_size, action_size)
+        # self.fc_v = nn.Linear(hidden_size, 1)
+
         self.fc_adv = nn.Linear(hidden_size, action_size)
         self.fc_v = nn.Linear(hidden_size, 1)
 
     def forward(self, x):
-        h = self.net(x)
+        # h = self.net(x)
+        # print(x.shape)
+        # print(x.view(x.shape[0], 1, -1).shape)
+
+        h = self.net(x.view(x.shape[0], 1, -1)).view(x.shape[0], -1)
+        # print(h.shape)
         adv = self.fc_adv(h)
+        # print(adv.shape)
+        # print(adv.size())
         val = self.fc_v(h).expand(-1, adv.size(1))
         output = val + adv - adv.mean(1, keepdim=True).expand(-1, adv.size(1))
+        # val = self.fc_v(h).expand(-1, self.action_size)
+        # output = val + adv - adv.mean(1, keepdim=True).expand(-1, self.action_size)
 
         return output
 
@@ -71,7 +111,7 @@ class QNetwork(nn.Module):
     def forward(self, x):
         return self.net1(x), self.net2(x)
 
-class DQN:
+class DQN_CNN:
 
     def __init__(self, state_size, action_size, hidden_size=64, device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
                  batch_size=64, gamma=0.99, lr=1e-3,

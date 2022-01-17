@@ -47,8 +47,16 @@ class batteryEnv(gym.Env):
             # std =  self.working_minutes / 2
             # a, b = (a - mean) / std, (b - mean) / std
             # self.left_time = int(round(*truncnorm.rvs(a, b, loc=mean, scale=std, size=1)))*self.step_minutes
-            self.lifts = np.random.uniform(low=10.0, high=100.0, size=self.lift_num)
-            self.batterys = np.random.uniform(low=10.0, high=100.0, size=self.battery_num)
+
+
+            a, b = 10, 100
+            mean = 100
+            std =  45
+            a, b = (a - mean) / std, (b - mean) / std
+            self.lifts = truncnorm.rvs(a, b, loc=mean, scale=std, size=self.lift_num)
+            self.batterys = truncnorm.rvs(a, b, loc=mean, scale=std, size=self.battery_num)
+            # self.lifts = np.random.uniform(low=10.0, high=100.0, size=self.lift_num)
+            # self.batterys = np.random.uniform(low=10.0, high=100.0, size=self.battery_num)
             # self.lifts = np.full(self.lift_num, 100.0)
             # self.batterys = np.full(self.battery_num, 100.0)
         
